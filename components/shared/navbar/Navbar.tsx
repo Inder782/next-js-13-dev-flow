@@ -6,6 +6,8 @@ import { SignedIn, UserButton } from "@clerk/nextjs";
 import Theme from "./Theme";
 import MobileNav from "./MobileNav";
 import GlobalSearch from "@/components/search/GlobalSearch";
+import { Space_Grotesk } from "next/font/google";
+import LeftSidebar from "./LeftSidebar";
 const Navbar = () => {
   return (
     <nav className="flex-between background-light900_dark200 fixed z-50 w-full gap-5 p-6 shadow-300 dark:shadow-none sm:px-12">
@@ -16,11 +18,12 @@ const Navbar = () => {
           height={23}
           alt="DevFlow"
         />
-        <p className="h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden">
+        <p className="font-spaceGrotesk h2-bold  text-dark-100 dark:text-light-900 max-sm:hidden">
           Dev <span className="text-primary-500">Overflow</span>
         </p>
       </Link>
       <GlobalSearch />
+
       <div className="flex-between gap-5">
         <Theme />
         <SignedIn>
