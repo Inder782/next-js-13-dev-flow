@@ -44,5 +44,8 @@ export interface BadgeCounts {
   SILVER: number;
   BRONZE: number;
 }
-
+export interface discussions {
+  id: number;
+  question: string;
+}
 export type BadgeCriteriaType = keyof typeof BADGE_CRITERIA;
