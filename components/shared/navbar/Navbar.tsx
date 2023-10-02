@@ -7,7 +7,7 @@ import Theme from "./Theme";
 import MobileNav from "./MobileNav";
 import GlobalSearch from "@/components/search/GlobalSearch";
 import { Space_Grotesk } from "next/font/google";
-import LeftSidebar from "./LeftSidebar";
+import LeftSidebar from "../LeftSidebar";
 const Navbar = () => {
   return (
     <nav className="flex-between background-light900_dark200 fixed z-50 w-full gap-5 p-6 shadow-300 dark:shadow-none sm:px-12">
