@@ -1,6 +1,9 @@
 "use client";
+
 import React from "react";
+
 import { useTheme } from "@/context/ThemeProvider";
+
 import {
   Menubar,
   MenubarContent,
@@ -13,6 +16,7 @@ import { themes } from "@/constants";
 
 const Theme = () => {
   const { mode, setMode } = useTheme();
+
   return (
     <Menubar className="relative border-none bg-transparent shadow-none">
       <MenubarMenu>
@@ -35,13 +39,14 @@ const Theme = () => {
             />
           )}
         </MenubarTrigger>
-        <MenubarContent className="absolute right-[-3rem] mt-3 min-w-[120px] rounded border py-2 dark:border-dark-400 dark:bg-dark-300">
+        <MenubarContent className="absolute right-[-3rem] mt-3 min-w-[120px] rounded border py-2 dark:border-dark-400 dark:bg-dark-300 ">
           {themes.map((item) => (
             <MenubarItem
               key={item.value}
               className="flex items-center gap-4 px-2.5 py-2 dark:focus:bg-dark-400"
               onClick={() => {
                 setMode(item.value);
+
                 if (item.value !== "system") {
                   localStorage.theme = item.value;
                 } else {
