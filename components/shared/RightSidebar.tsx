@@ -25,27 +25,27 @@ const discussion: discussions[] = [
 
 const populartags = [
   {
-    _id: 1,
+    _id: "1",
     name: "javascript",
     totalquestion: 5,
   },
   {
-    _id: 2,
+    _id: "2",
     name: "React",
     totalquestion: 5,
   },
   {
-    _id: 3,
+    _id: "3",
     name: "Vue",
     totalquestion: 5,
   },
   {
-    _id: 4,
+    _id: "4",
     name: "Next",
     totalquestion: 5,
   },
   {
-    _id: 5,
+    _id: "5",
     name: "Redux",
     totalquestion: 5,
   },

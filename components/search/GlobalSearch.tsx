@@ -16,7 +16,7 @@ const GlobalSearch = () => {
         <Input
           type="text"
           placeholder="Seach anything Locally"
-          className="background-light800_darkgradient border-none shadow-none no-focus outline-none"
+          className="background-light800_darkgradient text-dark-900 dark:text-light-800 border-none shadow-none no-focus outline-none"
         />
       </div>
     </div>
