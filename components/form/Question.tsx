@@ -19,11 +19,12 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useRef, useState } from "react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
+import { createQuestion } from "@/lib/actions/question.action";
+import { type } from "os";
 
 const Question = () => {
-  const type = "edit";
   const editorRef = useRef(null);
-
+  const type: any = "create";
   const [issubmitting, setissubmitting] = useState(false);
 
   // 1. Define your form.
@@ -37,11 +38,11 @@ const Question = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof Questionschema>) {
+  async function onSubmit(values: z.infer<typeof Questionschema>) {
     setissubmitting(true);
 
     try {
-      // make an async call to the databse to create a question
+      await createQuestion({});
     } catch (error) {
     } finally {
       setissubmitting(false);
@@ -95,7 +96,7 @@ const Question = () => {
               </FormLabel>
               <FormControl className="mt-3.5">
                 <Input
-                  className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark-300_light700 min-h[56px] border"
+                  className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark-300 dark:text-light-850 min-h[56px] border"
                   {...field}
                 />
               </FormControl>
@@ -109,7 +110,7 @@ const Question = () => {
         />
         <FormField
           control={form.control}
-          name="title"
+          name="explaination"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
@@ -124,6 +125,8 @@ const Question = () => {
                     //@ts-ignore
                     (editorRef.current = editor)
                   }
+                  onBlur={field.onBlur}
+                  onEditorChange={(content) => field.onChange}
                   initialValue=""
                   init={{
                     height: 350,
@@ -173,7 +176,7 @@ const Question = () => {
               <FormControl className="mt-3.5">
                 <>
                   <Input
-                    className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark-300_light700 min-h[56px] border"
+                    className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark-300 dark:text-light-850 min-h[56px] border"
                     placeholder="Add tags.."
                     onKeyDown={(e) => handleInputKeydown(e, field)}
                   />
@@ -215,7 +218,7 @@ const Question = () => {
           disabled={issubmitting}
         >
           {issubmitting ? (
-            <>{type === "edit" ? "Editing..." : "posting..."}</>
+            <>{type === "edit" ? "Editing..." : "Posting..."}</>
           ) : (
             <>{type === "edit" ? "Edit question" : "Ask a question"}</>
           )}
