@@ -8,50 +8,10 @@ import { HomePageFilters } from "@/constants/filters";
 import Homefilters from "@/components/home/Homefilters";
 import Noresult from "@/components/shared/Noresult";
 import Questioncard from "@/components/cards/Questioncard";
-const questions = [
-  {
-    _id: "1",
-    title: "Cascading Deletes in SQLALchemy?",
-    tags: [
-      { _id: "1", name: "python" },
-      { _id: "2", name: "javascript" },
-    ],
-    authors: {
-      _id: "author1",
-      name: "John Doe",
-      picture: "url_to_picture",
-    },
-    upvotes: 10000000,
-    views: 10000000,
-    answers: [
-      { answerId: "answer1", text: "Sample answer 1" },
-      { answerId: "answer2", text: "Sample answer 2" },
-    ],
-    createdAt: new Date("2021-01-01T12:00:00.000Z"),
-  },
-  {
-    _id: "2",
-    title: "How to center a div",
-    tags: [
-      { _id: "3", name: "CSS" },
-      { _id: "4", name: "javascript" },
-    ],
-    authors: {
-      _id: "author2",
-      name: "Jane Doe",
-      picture: "url_to_picture",
-    },
-    upvotes: 1500,
-    views: 120000,
-    answers: [
-      { answerId: "answer3", text: "Sample answer 3" },
-      { answerId: "answer4", text: "Sample answer 4" },
-    ],
-    createdAt: new Date("2021-02-01T12:00:00.000Z"),
-  },
-];
+import { getQuestion } from "@/lib/actions/question.action";
 
-export default function Home() {
+export default async function Home() {
+  const result: any = await getQuestion({});
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -77,14 +37,14 @@ export default function Home() {
         />
         <Homefilters />
         <div className="mt-10 flex w-full flex-col gap-6">
-          {questions.length > 0 ? (
-            questions.map((question) => (
+          {result.questions?.length > 0 ? (
+            result?.questions.map((question) => (
               <Questioncard
                 key={question._id}
                 _id={question._id}
                 title={question.title}
                 tags={question.tags}
-                authors={question.authors}
+                author={question.author}
                 upvotes={question.upvotes}
                 views={question.views}
                 answers={question.answers}
