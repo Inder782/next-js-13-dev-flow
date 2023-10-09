@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
-  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+  const WEBHOOK_SECRET = process.env.NEXT_CLERK_WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
         last_name,
       } = evt.data;
 
-      const mongpUser = await UpdateUser({
+      const mongoUser = await UpdateUser({
         clerkId: id,
         updateData: {
           name: `${first_name}${last_name ? `${last_name}` : ""}`,
@@ -87,6 +87,7 @@ export async function POST(req: Request) {
         },
         path: `/profile/${id}`,
       });
+      return NextResponse.json({ message: "OK", user: mongoUser });
     }
   }
   if (eventType === "user.deleted") {
@@ -94,6 +95,7 @@ export async function POST(req: Request) {
     const deleteUser = await deleteuser({
       clerkId: id!,
     });
+    return NextResponse.json({ message: "OK", user: deleteUser });
   }
   return new Response("", { status: 201 });
 }
