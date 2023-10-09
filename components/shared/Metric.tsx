@@ -7,7 +7,7 @@ interface MetricProps {
   title: string;
   href?: string;
   textStyles?: string;
-  isAuthor?: string;
+  isAuthor?: boolean;
   alt: string;
   value: string | number;
 }
