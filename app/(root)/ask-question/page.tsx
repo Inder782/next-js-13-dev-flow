@@ -5,8 +5,7 @@ import { redirect } from "next/navigation";
 import { getUserbyid } from "@/lib/actions/user.action";
 
 const Ask = async () => {
-  // const { userId } = auth();
-  const userId = "123456";
+  const { userId } = auth();
   if (!userId) redirect("/sign-in");
   const mongouser = await getUserbyid({ userId });
   console.log(mongouser._id);
