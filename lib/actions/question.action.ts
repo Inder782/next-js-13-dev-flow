@@ -44,7 +44,6 @@ export async function createQuestion(params: CreateQuestionParams) {
       $push: { tags: { $each: tagDocuments } },
     });
     revalidatePath(path);
-
     // create an interaction record for the user ask question
     // Increment an author reputation for creating a specicfic question
   } catch (error) {
