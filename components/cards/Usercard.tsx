@@ -6,13 +6,14 @@ import { Badge } from "../ui/badge";
 import RenderTag from "../shared/RenderTag";
 interface Props {
   user: {
-    id: string;
+    _id: string;
     clerkId: string;
     picture: string;
     name: string;
     username: string;
   };
 }
+
 const Usercard = async ({ user }: Props) => {
   const interactedtags = await getTopInteractedTags({ userId: user._id });
   return (
@@ -38,10 +39,10 @@ const Usercard = async ({ user }: Props) => {
         </div>
 
         <div className="mt-5">
-          {interactedtags?.length > 0 ? (
+          {interactedtags.length > 0 ? (
             <div className="flex items-center gap-2">
-              {interactedtags?.map((tags) => (
-                <RenderTag key={tags._id} id={tags._id} name={tags.name} />
+              {interactedtags.map((tags) => (
+                <RenderTag key={tags._id} _id={tags._id} name={tags.name} />
               ))}
             </div>
           ) : (

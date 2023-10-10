@@ -7,7 +7,7 @@ import Link from "next/link";
 import Usercard from "@/components/cards/Usercard";
 
 const Page = async () => {
-  const results = await getAllusers({});
+  const result = await getAllusers({});
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All users</h1>
@@ -25,15 +25,13 @@ const Page = async () => {
         />
       </div>
       <section className="mt-12 flex flex-wrap gap-4">
-        {results?.users.length > 0 ? (
-          results?.users.map((user) => (
-            <Usercard key={user._id} user={user}></Usercard>
-          ))
+        {result.user.length > 0 ? (
+          result.user.map((user) => <Usercard key={user._id} user={user} />)
         ) : (
           <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
-            <p>No Users yet</p>
+            <p>No users yet</p>
             <Link href="/sign-up" className="mt-2 font-bold text-accent-blue">
-              Join to be the first
+              Join to be the first!
             </Link>
           </div>
         )}

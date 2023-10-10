@@ -7,7 +7,7 @@ import { connectTodatabase } from "./mongoose";
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
     connectTodatabase();
-    const { userId, limit = 3 } = params;
+    const { userId } = params;
     const user = await User.findById(userId);
 
     if (!user) throw new Error("User not found");
@@ -21,5 +21,6 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     ];
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
