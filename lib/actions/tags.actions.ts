@@ -1,9 +1,12 @@
 "use server";
 
 import User from "@/database/user.model";
+
 import { GetAllTagsParams, GetTopInteractedTagsParams } from "../shared.types";
 import { connectTodatabase } from "./mongoose";
 import Tag from "@/database/tags.model";
+import { GetTopInteractedTagsParams } from "../shared.types";
+import { connectTodatabase } from "./mongoose";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -36,3 +39,5 @@ export async function getAlltags(params: GetAllTagsParams) {
     throw error;
   }
 }
+
+

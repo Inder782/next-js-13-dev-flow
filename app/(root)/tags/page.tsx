@@ -1,4 +1,5 @@
 import React from "react";
+
 import LocalSearchbar from "@/components/search/LocalSearch";
 import Filter from "@/components/shared/Filter";
 import { UserFilters } from "@/constants/filters";
@@ -63,3 +64,4 @@ const Page = async () => {
 };
 
 export default Page;
+
