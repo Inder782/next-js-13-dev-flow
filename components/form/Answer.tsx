@@ -18,7 +18,17 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useTheme } from "@/context/ThemeProvider";
 import { Button } from "../ui/button";
 import Image from "next/image";
-const Answer = () => {
+import { CreateAnswer } from "@/lib/actions/answer.action";
+import { usePathname } from "next/navigation";
+import error from "next/error";
+
+interface Props {
+  question: string;
+  questionID: string;
+  authorId: string;
+}
+const Answer = ({ question, questionID, authorId }: Props) => {
+  const pathname = usePathname();
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: {
@@ -26,7 +36,27 @@ const Answer = () => {
     },
   });
   const [issubmit, setissubmit] = useState(false);
-  const handleCreateAnswer = (data: any) => {};
+  const handleCreateAnswer = async (values: z.infer<typeof AnswerSchema>) => {
+    setissubmit(true);
+
+    try {
+      await CreateAnswer({
+        content: values.answer,
+        author: JSON.parse(authorId),
+        question: JSON.parse(questionID),
+        path: pathname,
+      });
+      form.reset();
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+        editor.setContent("");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setissubmit(false);
+    }
+  };
   const editorRef = useRef(null);
   const { mode } = useTheme();
   return (

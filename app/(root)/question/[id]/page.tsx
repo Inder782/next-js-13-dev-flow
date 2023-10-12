@@ -7,9 +7,17 @@ import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import ParseHTML from "@/components/shared/ParseHTML";
 import RenderTag from "@/components/shared/RenderTag";
 import Answer from "@/components/form/Answer";
+import { auth } from "@clerk/nextjs";
+import { getUserbyid } from "@/lib/actions/user.action";
+import Allanswers from "@/components/shared/Allanswers";
 
 const page = async ({ params }: any) => {
   const result = await getQuestionByid({ questionId: params.id });
+  const { userId: clerkId } = auth();
+  let mongouser;
+  if (clerkId) {
+    mongouser = await getUserbyid({ userId: clerkId });
+  }
   return (
     <>
       <div className="flex-start w-full flex-col">
@@ -69,7 +77,16 @@ const page = async ({ params }: any) => {
           />
         ))}
       </div>
-      <Answer />
+      <Allanswers
+        questionId={result._id}
+        authorId={JSON.stringify(mongouser._id)}
+        totalAnswers={result.answers.length}
+      />
+      <Answer
+        question={result.content}
+        questionID={JSON.stringify(result._id)}
+        authorId={JSON.stringify(mongouser._id)}
+      />
     </>
   );
 };
