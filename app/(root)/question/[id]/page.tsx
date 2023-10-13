@@ -10,6 +10,7 @@ import Answer from "@/components/form/Answer";
 import { auth } from "@clerk/nextjs";
 import { getUserbyid } from "@/lib/actions/user.action";
 import Allanswers from "@/components/shared/Allanswers";
+import Votes from "@/components/shared/Votes";
 
 const page = async ({ params }: any) => {
   const result = await getQuestionByid({ questionId: params.id });
@@ -37,7 +38,18 @@ const page = async ({ params }: any) => {
               {result.author.name}
             </p>
           </Link>
-          <div className="flex justify-end ">Voting here</div>
+          <div className="flex justify-end ">
+            <Votes
+              type="Question"
+              itemId={JSON.stringify(result._id)}
+              userId={JSON.stringify(mongouser._id)}
+              upvotes={result.upvotes.length}
+              downvotes={result.downvotes.length}
+              hasupVoted={result.upvotes.includes(mongouser._id)}
+              hasdownVoted={result.downvotes.includes(mongouser._id)}
+              hasSaved={mongouser?.saved.includes(result._id)}
+            />
+          </div>
         </div>
         <h2 className="h2-semibold text-dark200_light800 mt-3.5 w-full text-left">
           {result.title}
