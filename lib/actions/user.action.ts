@@ -7,10 +7,14 @@ import {
   DeleteAnswerParams,
   DeleteUserParams,
   GetAllUsersParams,
+  GetSavedQuestionsParams,
+  ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "../shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
+import Tag from "@/database/tags.model";
+import { FilterQuery } from "mongoose";
 
 export async function getUserbyid(params: any) {
   try {
@@ -80,5 +84,62 @@ export async function getAllusers(params: GetAllUsersParams) {
   } catch (error) {
     throw error;
     console.log(error);
+  }
+}
+
+export async function togglesavequestion(params: ToggleSaveQuestionParams) {
+  try {
+    connectTodatabase();
+    const { userId, questionId, path } = params;
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error("user not found");
+    }
+    const isquestionsaved = user.saved.includes(questionId);
+
+    if (isquestionsaved) {
+      await User.findByIdAndUpdate(
+        userId,
+        { $pull: { saved: questionId } },
+        { new: true }
+      );
+    } else {
+      await User.findByIdAndUpdate(
+        userId,
+        { $addToSet: { saved: questionId } },
+        { new: true }
+      );
+    }
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+export async function Getsavedquestions(params: GetSavedQuestionsParams) {
+  try {
+    const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+    const query: FilterQuery<typeof Question> = searchQuery
+      ? { title: { $regex: new RegExp(searchQuery, "i") } }
+      : {};
+    const user = await User.findOne({ clerkId }).populate({
+      path: "saved",
+      match: query,
+      options: {
+        sort: { createdAt: -1 },
+      },
+      populate: [
+        { path: "tags", model: Tag, select: "_id name" },
+        { path: "author", model: User, select: "_id clerkId name picture" },
+      ],
+    });
+    if (!user) {
+      throw new Error("user not found");
+    }
+    const savedquestion = user.saved;
+    return { question: savedquestion };
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }
