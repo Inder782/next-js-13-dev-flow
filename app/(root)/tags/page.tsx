@@ -1,17 +1,13 @@
 import React from "react";
-
 import LocalSearchbar from "@/components/search/LocalSearch";
 import Filter from "@/components/shared/Filter";
 import { UserFilters } from "@/constants/filters";
-import { getAllusers } from "@/lib/actions/user.action";
 import Link from "next/link";
-import Usercard from "@/components/cards/Usercard";
 import Noresult from "@/components/shared/Noresult";
 import { getAlltags } from "@/lib/actions/tags.actions";
 
 const Page = async () => {
   const result = await getAlltags({});
-  console.log(result.tags);
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>
@@ -64,4 +60,3 @@ const Page = async () => {
 };
 
 export default Page;
-
