@@ -44,7 +44,7 @@ const Page = async () => {
                 </div>
                 <p className="paragraph-semibold text-dark300_light900 mt-3.5">
                   <span className="body-semibold primary-text-gradient mr-2.5">
-                    {tags.questions.length} Questions
+                    {tags.question.length} Questions
                   </span>
                 </p>
               </article>
