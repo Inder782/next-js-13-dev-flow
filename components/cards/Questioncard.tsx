@@ -3,6 +3,7 @@ import React from "react";
 import RenderTag from "../shared/RenderTag";
 import Metric from "../shared/Metric";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import { ObjectId } from "mongoose";
 
 interface QuestionProps {
   _id: string;
@@ -16,7 +17,7 @@ interface QuestionProps {
     name: string;
     picture: string;
   };
-  upvotes: string[];
+  upvotes: (string | ObjectId)[];
   views: number;
   answers: Array<object>;
   createdAt: Date;
