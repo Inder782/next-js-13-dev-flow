@@ -37,6 +37,7 @@ export async function getAlltags(params: GetAllTagsParams) {
   try {
     connectTodatabase();
     const tags = await Tag.find({});
+    console.log(tags);
     return { tags };
   } catch (error) {
     console.log(error);
@@ -50,7 +51,7 @@ export async function getQuestionbytagsid(params: GetQuestionsByTagIdParams) {
     const { tagId, page = 1, pageSize = 10, searchQuery } = params;
     const tagFilter: FilterQuery<ITAG> = { _id: tagId };
     const tag = await Tag.findOne(tagFilter).populate({
-      path: "questions",
+      path: "question",
       model: Question,
       match: searchQuery
         ? { title: { $regex: searchQuery, $options: "i" } }
@@ -66,7 +67,8 @@ export async function getQuestionbytagsid(params: GetQuestionsByTagIdParams) {
     if (!tag) {
       throw new Error("Tag not found");
     }
-    const questions = tag.questions;
+    const questions = tag.question;
+    console.log(questions);
     return { tagTitle: tag.name, questions };
   } catch (error) {
     console.log(error);

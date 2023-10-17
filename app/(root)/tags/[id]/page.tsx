@@ -7,7 +7,7 @@ import Questioncard from "@/components/cards/Questioncard";
 import { IQUESTION } from "@/database/question.model";
 import { URLProps } from "@/types";
 const Page = async ({ params, searchParams }: URLProps) => {
-  const result = await getQuestionbytagsid({
+  const results = await getQuestionbytagsid({
     tagId: params.id,
     page: 1,
     searchQuery: searchParams.q,
@@ -15,7 +15,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-        <h1 className="h1-bold text-dark100_light900">{result.tagTitle}</h1>
+        <h1 className="h1-bold text-dark100_light900">{results.tagTitle}</h1>
       </div>
       <div className="mt-11 w-full">
         <LocalSearchbar
@@ -26,8 +26,8 @@ const Page = async ({ params, searchParams }: URLProps) => {
           otherClasses="flex-1"
         />
         <div className="mt-10 flex w-full flex-col gap-6">
-          {result.questions.length > 0 ? (
-            result.questions.map((question: IQUESTION) => (
+          {results.questions.length > 0 ? (
+            results.questions.map((question: IQUESTION) => (
               <Questioncard
                 key={question._id}
                 _id={question._id}
