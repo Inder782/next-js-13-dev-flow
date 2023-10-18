@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { date } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -52,3 +53,18 @@ export const formatAndDivideNumber = (num: number): string => {
     return num.toString();
   }
 };
+
+export function getJoinedDate(date: Date): string {
+  if (!(date instanceof Date)) {
+    throw new Error("Invalid date object");
+  }
+
+  // Extract date components in UTC
+  const year = date.getFullYear();
+  const month = date.toLocaleString("default", { month: "long" }); // Months are zero-based
+
+  // Create a string in the format "YYYY-MM-DD"
+  const joinedDate = `${month} ${year}`;
+
+  return joinedDate;
+}
