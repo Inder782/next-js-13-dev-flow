@@ -9,6 +9,7 @@ import {
   GetAllUsersParams,
   GetSavedQuestionsParams,
   GetUserByIdParams,
+  GetUserStatsParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "../shared.types";
@@ -165,4 +166,34 @@ export async function getuserinfo(params: GetUserByIdParams) {
       totalQuestions,
     };
   } catch {}
+}
+
+export async function getuserQuestions(params: GetUserStatsParams) {
+  try {
+    connectTodatabase();
+    const { userId, page = 1, pageSize = 10 } = params;
+    const totalQuestions = await Question.countDocuments({ author: userId });
+    const userquestions = await Question.find({ author: userId })
+      .sort({ views: -1, upvotes: -1 })
+      .populate("tags", "_id name")
+      .populate("author", "_id clerkId name picture");
+    return { totalQuestions, questions: userquestions };
+  } catch {}
+}
+
+export async function getuserAnswers(params: GetUserStatsParams) {
+  try {
+    connectTodatabase();
+
+    const { userId, page = 1, pageSize = 10 } = params;
+    const totalAnswers = await ANSWERS.countDocuments({ author: userId });
+    const useranswers = await ANSWERS.find({ author: userId })
+      .sort({ upvotes: 1 })
+      .populate("author", "_id clerkid name picture")
+      .populate({ path: "question", model: "Question", select: "id title" });
+    return { totalAnswers, answers: useranswers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }

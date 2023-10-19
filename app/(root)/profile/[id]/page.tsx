@@ -8,10 +8,10 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getJoinedDate } from "@/lib/utils";
 import ProfileLink from "@/components/shared/ProfileLink";
-import { userInfo } from "os";
 import Stats from "@/components/shared/Stats";
-
-const Page = async ({ params }: URLProps) => {
+import QuestionTab from "@/components/shared/QuestionTab";
+import AnswersTab from "@/components/shared/AnswersTab";
+const Page = async ({ params, searchParams }: URLProps) => {
   const userinfo = await getuserinfo({ userId: params.id });
   const { userId: clerkId } = auth();
 
@@ -77,7 +77,10 @@ const Page = async ({ params }: URLProps) => {
           )}
         </SignedIn>
       </div>
-      <Stats />
+      <Stats
+        totalQuestions={userinfo?.totalQuestions}
+        totalAnswers={userinfo?.totalAnswer}
+      />
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="account" className="flex-1">
           <TabsList className="background-light800_dark400 min-h-[42px] p-1">
@@ -88,8 +91,20 @@ const Page = async ({ params }: URLProps) => {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="top-posts">Posts</TabsContent>
-          <TabsContent value="answers">Answers.</TabsContent>
+          <TabsContent value="top-posts">
+            <QuestionTab
+              searchParams={searchParams}
+              userId={userinfo?.user._id}
+              clerkId={clerkId!}
+            />
+          </TabsContent>
+          <TabsContent value="answers" className="flex w-full flex-col gap-6">
+            <AnswersTab
+              userId={userinfo?.user._id}
+              clerkId={clerkId!}
+              searchParams={searchParams}
+            />
+          </TabsContent>
         </Tabs>
       </div>
     </>
