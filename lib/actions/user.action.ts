@@ -42,15 +42,16 @@ export async function CreateUser(userparams: CreateUserParams) {
   }
 }
 
-export async function UpdateUser(userData: UpdateUserParams) {
+export async function UpdateUser(params: UpdateUserParams) {
   try {
     connectTodatabase();
-    const { clerkId, updateData, path } = userData;
-    await User.findByIdAndUpdate({ clerkId }, updateData), { new: true };
+    const { clerkId, updateData, path } = params;
+    console.log(updateData);
+    await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
-    return error;
+    throw error;
   }
 }
 export async function deleteuser(userData: DeleteUserParams) {
