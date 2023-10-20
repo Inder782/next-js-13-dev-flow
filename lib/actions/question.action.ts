@@ -5,12 +5,16 @@ import { connectTodatabase } from "./mongoose";
 import Tag from "@/database/tags.model";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
 } from "../shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import ANSWERS from "@/database/answer.model";
+import Interactions from "@/database/interaction.model";
 
 export async function getQuestion(params: GetQuestionsParams) {
   try {
@@ -134,5 +138,40 @@ export async function downvotequestion(params: QuestionVoteParams) {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+}
+
+export async function DeleteQuestion(params: DeleteQuestionParams) {
+  try {
+    connectTodatabase();
+
+    const { questionId, path } = params;
+    await Question.deleteOne({ id: questionId });
+    await ANSWERS.deleteMany({ id: questionId });
+    await Interactions.deleteMany({ question: questionId });
+    await Tag.updateMany(
+      { question: questionId },
+      { $pull: { question: questionId } }
+    );
+    revalidatePath(path);
+  } catch {}
+}
+
+export async function EditQuestion(params: EditQuestionParams) {
+  try {
+    connectTodatabase();
+    const { questionId, title, content, path } = params;
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) {
+      throw new Error("Question not Found");
+    }
+    question.title = title;
+    question.content = content;
+
+    await question.save();
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
   }
 }
