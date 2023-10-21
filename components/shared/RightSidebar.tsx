@@ -1,57 +1,41 @@
-import { discussions } from "@/types";
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 import RenderTag from "./RenderTag";
-const discussion: discussions[] = [
-  {
-    id: 0,
-    question:
-      "Best practices for data fetching in a Next.js application with Server-Side Rendering (SSR)?",
-  },
-  {
-    id: 1,
-    question: "Can I get the course for free?",
-  },
-  {
-    id: 2,
-    question: "Redux Toolkit Not Updating State as Expected",
-  },
-  {
-    id: 3,
-    question: "Async/Await Function Not Handling Errors Properly",
-  },
-];
+import { Gethotquestions } from "@/lib/actions/question.action";
+import { GetpopularTags } from "@/lib/actions/tags.actions";
 
-const populartags = [
-  {
-    _id: "1",
-    name: "javascript",
-    totalquestion: 5,
-  },
-  {
-    _id: "2",
-    name: "React",
-    totalquestion: 5,
-  },
-  {
-    _id: "3",
-    name: "Vue",
-    totalquestion: 5,
-  },
-  {
-    _id: "4",
-    name: "Next",
-    totalquestion: 5,
-  },
-  {
-    _id: "5",
-    name: "Redux",
-    totalquestion: 5,
-  },
-];
+// const populartags = [
+//   {
+//     _id: "1",
+//     name: "javascript",
+//     totalquestion: 5,
+//   },
+//   {
+//     _id: "2",
+//     name: "React",
+//     totalquestion: 5,
+//   },
+//   {
+//     _id: "3",
+//     name: "Vue",
+//     totalquestion: 5,
+//   },
+//   {
+//     _id: "4",
+//     name: "Next",
+//     totalquestion: 5,
+//   },
+//   {
+//     _id: "5",
+//     name: "Redux",
+//     totalquestion: 5,
+//   },
+// ];
 
-const RightSidebar = () => {
+const RightSidebar = async () => {
+  const hotquestion = await Gethotquestions();
+  const populartags = await GetpopularTags();
   return (
     <section
       className="background-light900_dark300 
@@ -62,15 +46,13 @@ const RightSidebar = () => {
       <div className="">
         <h3 className="h3-bold text-dark200_light900">Top Questions</h3>
         <div className="mt-7 flex w-full flex-col gap-[30px]">
-          {discussion.map((item) => (
+          {hotquestion.map((item) => (
             <Link
-              href={`/questions/${item.id}`}
+              href={`/question/${item.id}`}
               className="flex cursor-pointer items-cener
                 justify-between gap-7"
             >
-              <p className="body-medium text-dark500_light700">
-                {item.question}
-              </p>
+              <p className="body-medium text-dark500_light700">{item.title}</p>
               <Image
                 src="/assets/icons/chevron-right.svg"
                 alt="chevron right"
@@ -90,7 +72,7 @@ const RightSidebar = () => {
               key={tag._id}
               _id={tag._id}
               name={tag.name}
-              totalQuestions={tag.totalquestion}
+              totalQuestions={tag.numberofQuestion}
               showCount
             />
           ))}
