@@ -33,15 +33,16 @@ const Question = ({ mongoUserId, type, questionDetails }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const parsedQuestionDetails = JSON.parse(questionDetails || "");
-  const groupedtags = parsedQuestionDetails.tags.map((tag: any) => tag.name);
+  const parsedQuestionDetails =
+    questionDetails && JSON.parse(questionDetails || "");
+  const groupedtags = parsedQuestionDetails?.tags.map((tag: any) => tag.name);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof Questionschema>>({
     resolver: zodResolver(Questionschema),
     defaultValues: {
-      title: parsedQuestionDetails.title,
-      explaination: parsedQuestionDetails.explaination,
+      title: parsedQuestionDetails?.title,
+      explaination: parsedQuestionDetails?.explaination,
       tags: groupedtags || [],
     },
   });
@@ -154,7 +155,7 @@ const Question = ({ mongoUserId, type, questionDetails }: Props) => {
                   }
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue={parsedQuestionDetails.content || ""}
+                  initialValue={parsedQuestionDetails?.content || ""}
                   init={{
                     height: 350,
                     menubar: false,

@@ -9,9 +9,13 @@ import Homefilters from "@/components/home/Homefilters";
 import Noresult from "@/components/shared/Noresult";
 import Questioncard from "@/components/cards/Questioncard";
 import { getQuestion } from "@/lib/actions/question.action";
+import { SearchParamsProps } from "@/types";
 
-export default async function Home() {
-  const result: any = await getQuestion({});
+export default async function Home({ searchParams }: SearchParamsProps) {
+  const result: any = await getQuestion({
+    searchQuery: searchParams.q,
+  });
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
