@@ -1,7 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
+import { Url } from "next/dist/shared/lib/router/router";
 import { twMerge } from "tailwind-merge";
 import { date } from "zod";
-
+import qs from "query-string";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -67,4 +68,49 @@ export function getJoinedDate(date: Date): string {
   const joinedDate = `${month} ${year}`;
 
   return joinedDate;
+}
+
+interface Urlqueryparams {
+  params: string;
+  key: string;
+  value: string | null;
+}
+
+export function formUrlquery({ params, key, value }: Urlqueryparams) {
+  const currenturl = qs.parse(params);
+  currenturl[key] = value;
+
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currenturl,
+    },
+    {
+      skipNull: true,
+    }
+  );
+}
+
+interface RemoveUrlqueryparams {
+  params: string;
+  keytoRemove: string[];
+}
+
+export function removekeyfromquery({
+  params,
+  keytoRemove,
+}: RemoveUrlqueryparams) {
+  const currenturl = qs.parse(params);
+  keytoRemove.forEach((key) => {
+    delete currenturl[key];
+  });
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query: currenturl,
+    },
+    {
+      skipNull: true,
+    }
+  );
 }
