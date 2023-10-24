@@ -18,6 +18,7 @@ import Question from "@/database/question.model";
 import Tag from "@/database/tags.model";
 import { FilterQuery } from "mongoose";
 import ANSWERS from "@/database/answer.model";
+import { skip } from "node:test";
 
 export async function getUserbyid(params: any) {
   try {
@@ -82,9 +83,10 @@ export async function deleteuser(userData: DeleteUserParams) {
 export async function getAllusers(params: GetAllUsersParams) {
   try {
     connectTodatabase();
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
     const query: FilterQuery<typeof User> = {};
 
+    const skipAmount = (page - 1) * pageSize;
     if (searchQuery) {
       query.$or = [
         { name: { $regex: new RegExp(searchQuery, "i") } },
@@ -104,8 +106,13 @@ export async function getAllusers(params: GetAllUsersParams) {
         sortoptions = { reputation: 1 };
         break;
     }
-    const user = await User.find(query).sort(sortoptions);
-    return { user };
+    const user = await User.find(query)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort(sortoptions);
+    const totaluser = await User.countDocuments(query);
+    const isNext = totaluser > skipAmount + user.length;
+    return { user, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -144,10 +151,12 @@ export async function togglesavequestion(params: ToggleSaveQuestionParams) {
 export async function Getsavedquestions(params: GetSavedQuestionsParams) {
   try {
     const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
       : {};
     let sortedoptions = {};
+    const skipAmount = (page - 1) * pageSize;
     switch (filter) {
       case "most_recent":
         sortedoptions = { createdAt: -1 };
@@ -169,6 +178,8 @@ export async function Getsavedquestions(params: GetSavedQuestionsParams) {
       path: "saved",
       match: query,
       options: {
+        skip: skipAmount,
+        limit: pageSize,
         sort: sortedoptions,
       },
       populate: [
@@ -179,8 +190,10 @@ export async function Getsavedquestions(params: GetSavedQuestionsParams) {
     if (!user) {
       throw new Error("user not found");
     }
+    const totalanswer = await ANSWERS.countDocuments(query);
+    const isNext = totalanswer > skipAmount + user.saved.length;
     const savedquestion = user.saved;
-    return { question: savedquestion };
+    return { question: savedquestion, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -211,13 +224,18 @@ export async function getuserinfo(params: GetUserByIdParams) {
 export async function getuserQuestions(params: GetUserStatsParams) {
   try {
     connectTodatabase();
-    const { userId, page = 1, pageSize = 10 } = params;
+    const { userId, page = 1, pageSize = 100 } = params;
+    const skipAmount = (page - 1) * pageSize;
     const totalQuestions = await Question.countDocuments({ author: userId });
     const userquestions = await Question.find({ author: userId })
+      .skip(skipAmount)
+      .limit(pageSize)
       .sort({ views: -1, upvotes: -1 })
       .populate("tags", "_id name")
       .populate("author", "_id clerkId name picture");
-    return { totalQuestions, questions: userquestions };
+
+    const isNextQuestion = totalQuestions > skipAmount + userquestions.length;
+    return { totalQuestions, questions: userquestions, isNextQuestion };
   } catch {}
 }
 
@@ -226,12 +244,16 @@ export async function getuserAnswers(params: GetUserStatsParams) {
     connectTodatabase();
 
     const { userId, page = 1, pageSize = 10 } = params;
+    const skipAmount = (page - 1) * pageSize;
     const totalAnswers = await ANSWERS.countDocuments({ author: userId });
     const useranswers = await ANSWERS.find({ author: userId })
+      .skip(skipAmount)
+      .limit(pageSize)
       .sort({ upvotes: 1 })
       .populate("author", "_id clerkid name picture")
       .populate({ path: "question", model: "Question", select: "id title" });
-    return { totalAnswers, answers: useranswers };
+    const isNextAnswer = totalAnswers > skipAmount + useranswers.length;
+    return { totalAnswers, answers: useranswers, isNextAnswer };
   } catch (error) {
     console.log(error);
     throw error;

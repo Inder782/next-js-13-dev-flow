@@ -3,13 +3,13 @@ import React from "react";
 import LocalSearchbar from "@/components/search/LocalSearch";
 import Noresult from "@/components/shared/Noresult";
 import Questioncard from "@/components/cards/Questioncard";
-
+import Pagination from "@/components/shared/Pagination";
 import { IQUESTION } from "@/database/question.model";
 import { URLProps } from "@/types";
 const Page = async ({ params, searchParams }: URLProps) => {
   const results = await getQuestionbytagsid({
     tagId: params.id,
-    page: 1,
+    page: searchParams.page ? +searchParams.page + 1 : 1,
     searchQuery: searchParams.q,
   });
   return (
@@ -54,6 +54,10 @@ const Page = async ({ params, searchParams }: URLProps) => {
           )}
         </div>
       </div>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={results?.isNext}
+      />
     </>
   );
 };
