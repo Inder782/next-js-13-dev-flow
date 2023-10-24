@@ -12,7 +12,7 @@ interface Props {
   userid: string;
   totalAnswers: string;
   page?: number;
-  filter?: number;
+  filter?: string | undefined;
 }
 const Allanswers = async ({
   questionId,
@@ -21,7 +21,11 @@ const Allanswers = async ({
   page,
   filter,
 }: Props) => {
-  const results = await Getallanswers({ questionId });
+  const results = await Getallanswers({
+    questionId,
+    page: page ? +page : 1,
+    sortBy: filter,
+  });
   return (
     <div className="mt-11">
       <div className="flex items-center justify-between ">

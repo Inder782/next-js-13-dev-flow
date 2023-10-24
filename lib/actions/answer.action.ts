@@ -11,7 +11,6 @@ import { connectTodatabase } from "./mongoose";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import Interactions from "@/database/interaction.model";
-import Tag from "@/database/tags.model";
 
 export async function CreateAnswer(params: CreateAnswerParams) {
   try {
@@ -36,10 +35,25 @@ export async function CreateAnswer(params: CreateAnswerParams) {
 export async function Getallanswers(params: GetAnswersParams) {
   try {
     connectTodatabase();
-    const { questionId } = params;
+    const { questionId, sortBy, page } = params;
+    let sortedoptions = {};
+    switch (sortBy) {
+      case "highestUpvotes":
+        sortedoptions = { upvotes: -1 };
+        break;
+      case "lowestUpvotes":
+        sortedoptions = { downvotes: -1 };
+        break;
+      case "recent":
+        sortedoptions = { createdAt: -1 };
+        break;
+      case "old":
+        sortedoptions = { createdAt: 1 };
+        break;
+    }
     const answers = await ANSWERS.find({ question: questionId })
       .populate("author", "_id clerkId name picture")
-      .sort({ createdAt: -1 });
+      .sort(sortedoptions);
     return { answers };
   } catch (error) {
     console.log(error);

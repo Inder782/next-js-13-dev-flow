@@ -1,7 +1,7 @@
 import React from "react";
 import LocalSearchbar from "@/components/search/LocalSearch";
 import Filter from "@/components/shared/Filter";
-import { UserFilters } from "@/constants/filters";
+import { TagFilters } from "@/constants/filters";
 import Link from "next/link";
 import Noresult from "@/components/shared/Noresult";
 import { getAlltags } from "@/lib/actions/tags.actions";
@@ -10,8 +10,8 @@ import { SearchParamsProps } from "@/types";
 const Page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAlltags({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
   });
-  console.log(result);
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>
@@ -24,7 +24,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
           otherClasses="flex-1"
         />
         <Filter
-          filters={UserFilters}
+          filters={TagFilters}
           otherClasses="mt-10 min-h-[56px] sm:min-w-[170px]"
         />
       </div>
