@@ -14,6 +14,7 @@ import { SearchParamsProps } from "@/types";
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result: any = await getQuestion({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
   });
 
   return (

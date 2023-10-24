@@ -6,12 +6,17 @@ import Questioncard from "@/components/cards/Questioncard";
 
 import { auth } from "@clerk/nextjs";
 import { Getsavedquestions } from "@/lib/actions/user.action";
-export default async function Home() {
+import { SearchParamsProps } from "@/types";
+export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   if (!userId) {
     return null;
   }
-  const result: any = await Getsavedquestions({ clerkId: userId });
+  const result: any = await Getsavedquestions({
+    clerkId: userId,
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -28,7 +33,6 @@ export default async function Home() {
         <Filter
           filters={QuestionFilters}
           otherClasses="mt-10 min-h-[56px] sm:min-w-[170px]"
-          containerClasses="hidden max-md:flex"
         />
 
         <div className="mt-10 flex w-full flex-col gap-6">

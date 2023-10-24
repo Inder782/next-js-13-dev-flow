@@ -20,7 +20,7 @@ import { FilterQuery } from "mongoose";
 export async function getQuestion(params: GetQuestionsParams) {
   try {
     connectTodatabase();
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
     const query: FilterQuery<typeof Question> = {};
 
     if (searchQuery) {
@@ -29,10 +29,28 @@ export async function getQuestion(params: GetQuestionsParams) {
         { content: { $regex: new RegExp(searchQuery, "i") } },
       ];
     }
+    let sortoptions = {};
+
+    switch (filter) {
+      case "newest":
+        sortoptions = { createdAt: -1 };
+        break;
+
+      case "frequent":
+        sortoptions = { views: -1 };
+        break;
+
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
+
+      default:
+        break;
+    }
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
-      .sort({ createdAT: -1 });
+      .sort(sortoptions);
 
     return { questions };
   } catch (error) {

@@ -12,7 +12,7 @@ import { getUserbyid } from "@/lib/actions/user.action";
 import Allanswers from "@/components/shared/Allanswers";
 import Votes from "@/components/shared/Votes";
 
-const page = async ({ params }: any) => {
+const page = async ({ params, searchParams }: any) => {
   const result = await getQuestionByid({ questionId: params.id });
   const { userId: clerkId } = auth();
   let mongouser;
@@ -93,6 +93,8 @@ const page = async ({ params }: any) => {
         questionId={result._id}
         userid={mongouser._id}
         totalAnswers={result.answers.length}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
       <Answer
         question={result.content}
