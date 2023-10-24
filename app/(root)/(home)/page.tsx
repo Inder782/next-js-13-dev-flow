@@ -10,11 +10,13 @@ import Noresult from "@/components/shared/Noresult";
 import Questioncard from "@/components/cards/Questioncard";
 import { getQuestion } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result: any = await getQuestion({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -42,7 +44,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         />
         <Homefilters />
         <div className="mt-10 flex w-full flex-col gap-6">
-          {result.questions.length > 0 ? (
+          {result?.questions.length > 0 ? (
             result.questions.map((question: any) => (
               <Questioncard
                 key={question._id}
@@ -68,6 +70,10 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           )}
         </div>
       </div>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={result?.isNext}
+      />
     </>
   );
 }

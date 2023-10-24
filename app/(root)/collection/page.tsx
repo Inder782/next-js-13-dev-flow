@@ -3,7 +3,7 @@ import Filter from "@/components/shared/Filter";
 import { QuestionFilters } from "@/constants/filters";
 import Noresult from "@/components/shared/Noresult";
 import Questioncard from "@/components/cards/Questioncard";
-
+import Pagination from "@/components/shared/Pagination";
 import { auth } from "@clerk/nextjs";
 import { Getsavedquestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
@@ -16,6 +16,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     clerkId: userId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
   return (
     <>
@@ -62,6 +63,10 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           )}
         </div>
       </div>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={result?.isNext}
+      />
     </>
   );
 }

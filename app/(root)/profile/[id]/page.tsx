@@ -59,9 +59,11 @@ const Page = async ({ params, searchParams }: URLProps) => {
               </div>
             </div>
             {userinfo?.user.bio && (
-              <p className="paragraphql-regular text-dark400_light800">
-                {userinfo.user.bio}
-              </p>
+              <div>
+                <p className="paragraphql-regular text-dark400_light800">
+                  {userinfo.user.bio}
+                </p>
+              </div>
             )}
           </div>
         </div>
