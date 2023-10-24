@@ -6,12 +6,16 @@ import Questioncard from "@/components/cards/Questioncard";
 
 import { auth } from "@clerk/nextjs";
 import { Getsavedquestions } from "@/lib/actions/user.action";
-export default async function Home() {
+import { SearchParamsProps } from "@/types";
+export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   if (!userId) {
     return null;
   }
-  const result: any = await Getsavedquestions({ clerkId: userId });
+  const result: any = await Getsavedquestions({
+    clerkId: userId,
+    searchQuery: searchParams.q,
+  });
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
