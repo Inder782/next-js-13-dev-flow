@@ -11,6 +11,8 @@ import Questioncard from "@/components/cards/Questioncard";
 import { getQuestion } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+import { Truculenta } from "next/font/google";
+import Loading from "./Loading";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result: any = await getQuestion({
