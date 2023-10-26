@@ -228,9 +228,9 @@ export async function getuserQuestions(params: GetUserStatsParams) {
     const skipAmount = (page - 1) * pageSize;
     const totalQuestions = await Question.countDocuments({ author: userId });
     const userquestions = await Question.find({ author: userId })
+      .sort({ createdAt: -1, views: -1, upvotes: -1 })
       .skip(skipAmount)
       .limit(pageSize)
-      .sort({ views: -1, upvotes: -1 })
       .populate("tags", "_id name")
       .populate("author", "_id clerkId name picture");
 

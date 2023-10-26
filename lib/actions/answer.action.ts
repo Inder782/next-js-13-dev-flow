@@ -11,6 +11,8 @@ import { connectTodatabase } from "./mongoose";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import Interactions from "@/database/interaction.model";
+import Answer from "@/components/form/Answer";
+import User from "@/database/user.model";
 
 export async function CreateAnswer(params: CreateAnswerParams) {
   try {
@@ -23,10 +25,24 @@ export async function CreateAnswer(params: CreateAnswerParams) {
       author,
       question,
     });
+
+    const questionObj = await Question.findByIdAndUpdate(question, {
+      $push: { answers: newanswer._id },
+    });
+
     // ADD THE answer to the question answers array
     await Question.findByIdAndUpdate(question, {
       $push: { answers: newanswer._id },
     });
+    await Interactions.create({
+      user: author,
+      action: "answer",
+      question,
+      answer: newanswer._id,
+      tags: questionObj.tags,
+    });
+    // Increment an author reputation for creating a specicfic question
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
   } catch (error) {
     console.log(error);
     throw error;
@@ -88,6 +104,12 @@ export async function upvoteanswer(params: AnswerVoteParams) {
     if (!answer) {
       throw Error("cant find an answer");
     }
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -2 : 10 },
+    });
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 },
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -115,6 +137,13 @@ export async function Downvoteanswer(params: AnswerVoteParams) {
     if (!answer) {
       throw Error("cant find an answer");
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? -2 : 10 },
+    });
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasdownVoted ? -10 : 10 },
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
