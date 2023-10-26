@@ -28,6 +28,7 @@ interface Props {
   authorId: string;
 }
 const Answer = ({ question, questionID, authorId }: Props) => {
+  const [isSubmittingAi, setisSubmittingAi] = useState(false);
   const pathname = usePathname();
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
@@ -59,6 +60,32 @@ const Answer = ({ question, questionID, authorId }: Props) => {
   };
   const editorRef = useRef(null);
   const { mode } = useTheme();
+  const generateAnswer = async () => {
+    if (!authorId) return;
+    setisSubmittingAi(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
+        { method: "POST", body: JSON.stringify({ question }) }
+      );
+      const aiAnswer = await response.json();
+      //convert to html format
+
+      const formattedanswer = aiAnswer.reply;
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+        editor.setContent(
+          "This function fetches the Openai and gives you the answer from chatgpt... unfortunately i dont have a key yet :<"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setisSubmittingAi(false);
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2 ">
@@ -67,16 +94,22 @@ const Answer = ({ question, questionID, authorId }: Props) => {
         </h4>
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          onClick={() => {}}
+          onClick={generateAnswer}
         >
-          <Image
-            src="/assets/icons/stars.svg"
-            alt="start"
-            width={12}
-            height={12}
-            className="object-contain"
-          />
-          Generate An AI answer
+          {isSubmittingAi ? (
+            <>Generating....</>
+          ) : (
+            <>
+              <Image
+                src="/assets/icons/stars.svg"
+                alt="start"
+                width={12}
+                height={12}
+                className="object-contain"
+              />
+              Generate An AI answer
+            </>
+          )}
         </Button>
       </div>
       <Form {...form}>

@@ -3,6 +3,8 @@ import { Url } from "next/dist/shared/lib/router/router";
 import { twMerge } from "tailwind-merge";
 import { date } from "zod";
 import qs from "query-string";
+import { BADGE_CRITERIA } from "@/constants";
+import { BadgeCounts } from "@/types";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -114,3 +116,30 @@ export function removekeyfromquery({
     }
   );
 }
+
+interface BadgeParam {
+  criteria: {
+    type: keyof typeof BADGE_CRITERIA;
+    count: number;
+  }[];
+}
+export const assignBadges = (params: BadgeParam) => {
+  const badgecounts: BadgeCounts = {
+    GOLD: 0,
+    SILVER: 0,
+    BRONZE: 0,
+  };
+  const { criteria } = params;
+  criteria.forEach((item) => {
+    const { type, count } = item;
+    const badgelevels: any = BADGE_CRITERIA[type];
+
+    Object.keys(badgelevels).forEach((level: any) => {
+      if (count >= badgelevels[level]) {
+        badgecounts[level as keyof BadgeCounts] += 1;
+      }
+    });
+  });
+
+  return badgecounts;
+};

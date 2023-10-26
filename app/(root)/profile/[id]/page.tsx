@@ -11,6 +11,7 @@ import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswersTab from "@/components/shared/AnswersTab";
+
 const Page = async ({ params, searchParams }: URLProps) => {
   const userinfo = await getuserinfo({ userId: params.id });
   const { userId: clerkId } = auth();
@@ -80,8 +81,11 @@ const Page = async ({ params, searchParams }: URLProps) => {
         </SignedIn>
       </div>
       <Stats
+        reputation={userinfo?.reputation}
         totalQuestions={userinfo?.totalQuestions}
         totalAnswers={userinfo?.totalAnswer}
+        //@ts-ignore
+        badges={userinfo?.badgecounts}
       />
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="account" className="flex-1">

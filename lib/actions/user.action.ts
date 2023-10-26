@@ -19,6 +19,8 @@ import Tag from "@/database/tags.model";
 import { FilterQuery } from "mongoose";
 import ANSWERS from "@/database/answer.model";
 import { skip } from "node:test";
+import { BadgeCriteriaType } from "@/types";
+import { assignBadges } from "../utils";
 
 export async function getUserbyid(params: any) {
   try {
@@ -213,10 +215,61 @@ export async function getuserinfo(params: GetUserByIdParams) {
     const totalQuestions = await Question.countDocuments({ author: user._id });
     const totalAnswer = await ANSWERS.countDocuments({ author: user._id });
 
+    const [questionupvotes] = await Question.aggregate([
+      { $match: { author: user._id } },
+      { $project: { _id: 0, upvotes: { $size: "$upvotes" } } },
+      {
+        $group: {
+          _id: null,
+          totalupvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+    const [answerupvotes] = await ANSWERS.aggregate([
+      { $match: { author: user._id } },
+      { $project: { _id: 0, upvotes: { $size: "$upvotes" } } },
+      {
+        $group: {
+          _id: null,
+          totalupvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    const [questionViews] = await ANSWERS.aggregate([
+      { $match: { author: user._id } },
+      { $project: { _id: 0, upvotes: { $size: "$upvotes" } } },
+      {
+        $group: {
+          _id: null,
+          totalviews: { $sum: "$views" },
+        },
+      },
+    ]);
+    const criteria = [
+      { type: "QUESTION_COUNT" as BadgeCriteriaType, count: totalQuestions },
+      { type: "ANSWER_COUNT" as BadgeCriteriaType, count: totalAnswer },
+      {
+        type: "QUESTION_UPVOTES" as BadgeCriteriaType,
+        count: questionupvotes?.totalupvotes || 0,
+      },
+      {
+        type: "ANSWER_UPVOTES" as BadgeCriteriaType,
+        count: answerupvotes?.totalupvotes || 0,
+      },
+      {
+        type: "TOTAL_VIEWS" as BadgeCriteriaType,
+        count: questionViews?.totalviews || 0,
+      },
+    ];
+
+    const badgecounts = assignBadges({ criteria });
     return {
       user,
       totalAnswer,
       totalQuestions,
+      badgecounts,
+      reputation: user.reputation,
     };
   } catch {}
 }
