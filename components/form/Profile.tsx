@@ -74,7 +74,7 @@ const Profile = ({ clerkId, user }: Props) => {
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className="space-y-3.5">
+            <FormItem className="space-y-3.5 dark:text-light-900">
               <FormLabel>
                 Name
                 <span className="text-primary-500">*</span>
@@ -83,7 +83,7 @@ const Profile = ({ clerkId, user }: Props) => {
                 <Input
                   placeholder="Your name"
                   {...field}
-                  className="no-focus paragraph-regular light-border-2 background-light700_dark300 text-dark300_light700 min-h-[56px] border"
+                  className="no-focus paragraph-regular light-border-2 background-light700_dark300 text-dark300_light700 min-h-[56px] border  dark:text-light-900"
                 />
               </FormControl>
               <FormMessage />
@@ -94,7 +94,7 @@ const Profile = ({ clerkId, user }: Props) => {
           control={form.control}
           name="username"
           render={({ field }) => (
-            <FormItem className="space-y-3.5">
+            <FormItem className="space-y-3.5  dark:text-light-900">
               <FormLabel>
                 Your Username
                 <span className="text-primary-500">*</span>
@@ -114,7 +114,7 @@ const Profile = ({ clerkId, user }: Props) => {
           control={form.control}
           name="portfoliowebsite"
           render={({ field }) => (
-            <FormItem className="space-y-3.5">
+            <FormItem className="space-y-3.5  dark:text-light-900">
               <FormLabel>Your Portfolio Website</FormLabel>
               <FormControl>
                 <Input
@@ -131,7 +131,7 @@ const Profile = ({ clerkId, user }: Props) => {
           control={form.control}
           name="location"
           render={({ field }) => (
-            <FormItem className="space-y-3.5">
+            <FormItem className="space-y-3.5  dark:text-light-900">
               <FormLabel>Location</FormLabel>
               <FormControl>
                 <Input
@@ -148,7 +148,7 @@ const Profile = ({ clerkId, user }: Props) => {
           control={form.control}
           name="bio"
           render={({ field }) => (
-            <FormItem className="space-y-3.5">
+            <FormItem className="space-y-3.5  dark:text-light-900">
               <FormLabel>
                 Bio <span className="text-primary-500">*</span>
               </FormLabel>
