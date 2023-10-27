@@ -20,7 +20,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { CreateAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
-import error from "next/error";
+import { useToast } from "../ui/use-toast";
 
 interface Props {
   question: string;
@@ -58,6 +58,7 @@ const Answer = ({ question, questionID, authorId }: Props) => {
       setissubmit(false);
     }
   };
+  const { toast } = useToast();
   const editorRef = useRef(null);
   const { mode } = useTheme();
   const generateAnswer = async () => {
@@ -94,7 +95,13 @@ const Answer = ({ question, questionID, authorId }: Props) => {
         </h4>
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          onClick={generateAnswer}
+          onClick={() => {
+            generateAnswer;
+            toast({
+              title: "Waiting for Chatgpt to response",
+              description: "Generating an ai answer for you ",
+            });
+          }}
         >
           {isSubmittingAi ? (
             <>Generating....</>
@@ -170,7 +177,13 @@ const Answer = ({ question, questionID, authorId }: Props) => {
             )}
           />
           <div className="flex justify-end">
-            <Button type="submit" className="primary-gradient w-fit ">
+            <Button
+              type="submit"
+              className="primary-gradient w-fit "
+              onClick={() => {
+                toast({ title: "Submitting your answer , Please wait !" });
+              }}
+            >
               {issubmit ? "Submitting" : "Submit"}
             </Button>
           </div>
