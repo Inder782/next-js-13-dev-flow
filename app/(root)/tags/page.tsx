@@ -7,6 +7,7 @@ import Noresult from "@/components/shared/Noresult";
 import { getAlltags } from "@/lib/actions/tags.actions";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+import Loading from "./Loading";
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAlltags({
@@ -14,6 +15,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1,
   });
+
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>
