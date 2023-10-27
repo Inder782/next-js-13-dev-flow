@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, auth } from "@clerk/nextjs";
 import Link from "next/link";
 import LocalSearch from "@/components/search/LocalSearch";
 import LocalSearchbar from "@/components/search/LocalSearch";
@@ -8,18 +8,35 @@ import { HomePageFilters } from "@/constants/filters";
 import Homefilters from "@/components/home/Homefilters";
 import Noresult from "@/components/shared/Noresult";
 import Questioncard from "@/components/cards/Questioncard";
-import { getQuestion } from "@/lib/actions/question.action";
+import { getQuestion, recommendation } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 import { Truculenta } from "next/font/google";
 import Loading from "./Loading";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const result: any = await getQuestion({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
+  const { userId } = auth();
+  let result;
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
+      result = await recommendation({
+        userId,
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1,
+      });
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+      };
+    }
+  } else {
+    result = await getQuestion({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    });
+  }
 
   return (
     <>
@@ -46,8 +63,8 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         />
         <Homefilters />
         <div className="mt-10 flex w-full flex-col gap-6">
-          {result?.questions.length > 0 ? (
-            result.questions.map((question: any) => (
+          {result!.questions.length > 0 ? (
+            result?.questions.map((question: any) => (
               <Questioncard
                 key={question._id}
                 _id={question._id}

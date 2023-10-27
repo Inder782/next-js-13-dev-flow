@@ -10,12 +10,14 @@ import {
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
+  RecommendedParams,
 } from "../shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import ANSWERS from "@/database/answer.model";
 import Interactions from "@/database/interaction.model";
 import { FilterQuery } from "mongoose";
+import { Inter } from "next/font/google";
 
 export async function getQuestion(params: GetQuestionsParams) {
   try {
@@ -243,5 +245,62 @@ export async function Gethotquestions() {
     return hotquestions; // sort in descending order
   } catch (error) {
     throw Error;
+  }
+}
+
+export async function recommendation(params: RecommendedParams) {
+  try {
+    await connectTodatabase();
+    const { userId, page = 1, pageSize = 20, searchQuery } = params;
+    // find the user
+
+    const user = await User.findOne({ clerkid: userId });
+    if (!user) {
+      throw new Error("user not found");
+    }
+    const skipAmount = (page - 1) * pageSize;
+
+    const userinteaction = await Interactions.find({ user: user._id })
+      .populate("tags")
+      .exec();
+
+    const usertags = userinteaction.reduce((tags, interactions) => {
+      if (interactions.tags) {
+        tags = tags.concat(interactions.tags);
+      }
+      return tags;
+    }, []);
+    //@ts-ignore
+    const distinctusertags = [...new Set(usertags.map((tag: any) => tag._id))];
+    const query: FilterQuery<typeof Question> = {
+      $and: [
+        { tags: { $in: distinctusertags } },
+        { author: { $ne: user._id } },
+      ],
+    };
+    if (searchQuery) {
+      query.$or = [
+        { title: { regex: searchQuery, $options: "i" } },
+        { content: { $regex: searchQuery, $options: "i" } },
+      ];
+    }
+    const totalQuestion = await Question.countDocuments(query);
+    const recommendedQuestion = await Question.find(query)
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .skip(skipAmount)
+      .limit(pageSize);
+
+    const isNext = totalQuestion > skipAmount + recommendedQuestion.length;
+    return { questions: recommendedQuestion, isNext };
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }
