@@ -21,6 +21,7 @@ import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { EditQuestion, createQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
+import { toast, useToast } from "../ui/use-toast";
 
 interface Props {
   mongoUserId: string;
@@ -32,7 +33,7 @@ const Question = ({ mongoUserId, type, questionDetails }: Props) => {
   const [issubmitting, setissubmitting] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-
+  const { toast } = useToast();
   const parsedQuestionDetails =
     questionDetails && JSON.parse(questionDetails || "");
   const groupedtags = parsedQuestionDetails?.tags.map((tag: any) => tag.name);
@@ -247,6 +248,11 @@ const Question = ({ mongoUserId, type, questionDetails }: Props) => {
           type="submit"
           className="primary-gradient w-fit !text-light-900"
           disabled={issubmitting}
+          onClick={() => {
+            toast({
+              title: "Wait Submitting You question",
+            });
+          }}
         >
           {issubmitting ? (
             <>{type === "Edit" ? "Editing..." : "Posting..."}</>

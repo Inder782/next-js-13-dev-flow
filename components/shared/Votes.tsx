@@ -10,6 +10,7 @@ import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import { toast, useToast } from "../ui/use-toast";
 
 interface Props {
   type: string;
@@ -33,6 +34,7 @@ const Votes = ({
 }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { toast } = useToast();
   const handleVote = async (action: string) => {
     if (!userId) {
       return;
@@ -108,6 +110,9 @@ const Votes = ({
             className="cursor-pointer"
             onClick={() => {
               handleVote("upvote");
+              toast({
+                title: "Upvote Successfull",
+              });
             }}
           />
           <div className="flex-center background-light700_dark400 min-[18px] rounded-sm p-1">
@@ -126,7 +131,12 @@ const Votes = ({
             alt="downvote"
             width={18}
             height={18}
-            onClick={() => handleVote("downvote")}
+            onClick={() => {
+              handleVote("downvote");
+              toast({
+                title: "Downvote Successfull",
+              });
+            }}
             className="cursor-pointer"
           />
           <div className="flex-center background-light700_dark400 min-[18px] rounded-sm p-1">
