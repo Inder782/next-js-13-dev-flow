@@ -12,7 +12,7 @@ export const connectTodatabase = async () => {
   }
   try {
     await mongoose.connect(process.env.MONGODB_URL, {
-      dbName: "devflow",
+      dbName: "devflow", // your db name
     });
     isConnected = true;
     console.log("Mongo connected");

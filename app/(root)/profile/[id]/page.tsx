@@ -16,7 +16,6 @@ import Loading from "./Loading";
 const Page = async ({ params, searchParams }: URLProps) => {
   const userinfo = await getuserinfo({ userId: params.id });
   const { userId: clerkId } = auth();
-  const isloading = true;
   return (
     <>
       <div className="flex flex-col-reverse items-start justify-between sm:flex-row">
@@ -28,6 +27,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
             height={140}
             className="rounded-full"
           />
+
           <div className="mt-3">
             <h2 className="h2-bold text-dark100_light900">
               {userinfo?.user.name}
@@ -38,21 +38,17 @@ const Page = async ({ params, searchParams }: URLProps) => {
             <div>
               <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
                 {userinfo?.user.location && (
-                  <p>
-                    <ProfileLink
-                      imgUrl="/assets/icons/location.svg"
-                      title={userinfo.user.location}
-                    />
-                  </p>
+                  <ProfileLink
+                    imgUrl="/assets/icons/location.svg"
+                    title={userinfo.user.location}
+                  />
                 )}
                 {userinfo?.user.location && (
-                  <p>
-                    <ProfileLink
-                      imgUrl="/assets/icons/link.svg"
-                      href={userinfo.user.portfoliowebsite}
-                      title="Portfolio"
-                    />
-                  </p>
+                  <ProfileLink
+                    imgUrl="/assets/icons/link.svg"
+                    href={userinfo.user.portfoliowebsite}
+                    title="Portfolio"
+                  />
                 )}
                 <ProfileLink
                   imgUrl="/assets/icons/calendar.svg"
@@ -69,17 +65,17 @@ const Page = async ({ params, searchParams }: URLProps) => {
             )}
           </div>
         </div>
-      </div>
-      <div className="flex justify-end  max-sm:mb-5 max-sm:w-full sm:mt-3">
-        <SignedIn>
-          {clerkId === userinfo?.user.clerkId && (
-            <Link href="/profile/edit">
-              <Button className="paragraph-medium btn-secondary text-dark300_light900 min-h-[46px] min-w-[175px] px-4 py-3">
-                Edit Profile
-              </Button>
-            </Link>
-          )}
-        </SignedIn>
+        <div className="flex justify-end  max-sm:mb-5 max-sm:w-full sm:mt-3">
+          <SignedIn>
+            {clerkId === userinfo?.user.clerkId && (
+              <Link href="/profile/edit">
+                <Button className="paragraph-medium btn-secondary text-dark300_light900 min-h-[46px] min-w-[175px] px-4 py-3">
+                  Edit Profile
+                </Button>
+              </Link>
+            )}
+          </SignedIn>
+        </div>
       </div>
       <Stats
         reputation={userinfo?.reputation}
